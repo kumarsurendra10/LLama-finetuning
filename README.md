@@ -1,4 +1,4 @@
-# InstructLLaMA
+# Fine-tuning Llama2 with RLHF loop
 
 Implements pre-training, supervised fine-tuning (SFT), and reinforcement learning from human feedback (RLHF), to train and fine-tune the LLaMA2 model to follow human instructions, similar to InstructGPT or ChatGPT, but on a much smaller scale.
 
