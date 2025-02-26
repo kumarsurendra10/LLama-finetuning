@@ -2,8 +2,6 @@
 
 Implements pre-training, supervised fine-tuning (SFT), and reinforcement learning from human feedback (RLHF), to train and fine-tune the LLaMA2 model to follow human instructions, similar to InstructGPT or ChatGPT, but on a much smaller scale.
 
-Check the [article post](https://www.vectortheta.com/blog/InstructLLaMA) on the discussion of the project.
-
 # Disclaimer
 
 **Project Purpose:** This project is dedicated to research and education, focusing on the study of individual algorithms rather than the creation of a standard library. If you're looking for a ready-to-use library for production applications, this project may not be suitable for your needs.
@@ -19,29 +17,6 @@ Check the [article post](https://www.vectortheta.com/blog/InstructLLaMA) on the 
 - Tensorboard 2.13.0
 - Bitsandbytes 0.41.3
 
-# Code Structure
-
-- `instruct_llama` directory contains main source code for the project.
-
-  - `configs` directory contains all the training configurations like model type, data source, number of iterations, learning rate etc.
-  - `cores` directory contains core modules like custom datasets, RL PPO agent etc.
-  - `models` directory contains the LLaMA model class and LoRA layers.
-  - `utils` directory contains helper modules like logging, checkpointing etc.
-  - `run_pretrain.py` run (full-scale) pre-training starting from a random model (supports FSDP and multiple GPUs).
-  - `run_sft.py` run (full-scale) supervised fine-tuning starting from pre-trained model(only supports single GPU).
-  - `run_sft_lora.py` basically the same as `run_sft.py`, but support 4-bit QLoRA (only supports single GPU).
-  - `run_rm.py` train reward model (full-scale) starting from supervised fine-tuning model (only supports single GPU).
-  - `run_rlhf.py` run (full-scale) RL PPO to train policy and value models, starting from supervised fine-tuning model and reward model respectively (supports allocate different models on different GPUs on a single machine, but no DDP or FSDP).
-
-- `scripts` directory contains all source code for convert the model weights and build datasets for different phases.
-  - `build_pretrain_datasets.py` build pre-train datasets (save the dataset in Numpy memmap structure), the dataset is optional during training using RLHF with PPO phase.
-  - `build_finetune_datasets.py` build fine-tuning datasets (save the dataset to .pkl files).
-  - `build_rm_comparison_datasets.py` build comparison datasets(save the dataset to .pkl files), which is used to train the reward model .
-  - `build_rlhf_prompt_datasets.py` build prompt only datasets (save the dataset to .pkl files), which is used during RLHF PPO fine-tuning phase.
-  - `convert_meta_checkpoint.py` convert Meta's pre-trained LLaMA-2 weights to support our model in plain PyTorch code, so we can load it to start fine-tuning.
-  - `convert_lora_checkpoint.py` convert fine-tunned LoRA weights to a full state_dict checkpoint.
-- `inference` directory contains the code to do inference, which was adapted from the original LLaMA2 project.
-- `logs` directory contains training logs for the different phases.
 
 # Project Setup
 
@@ -189,19 +164,3 @@ tensorboard --logdir=./logs
 
 It's very beneficial to monitor the generated samples during RL training. To do so, go to Tensorboard - Text, we can then check the prompt text, model generated response, and the corresponding scalar reward. This works better if we enable MarkDown in Tensorboard.
 
-# License
-
-This project is licensed under the MIT License (the "License")
-see the LICENSE file for details
-
-For details about LLaMA2 model weights license, visit: https://github.com/facebookresearch/llama#license
-
-# Acknowledgments
-
-This project is greatly influenced by the following projects:
-
-- [Llama 2] (https://github.com/facebookresearch/llama)
-- [lm-human-preferences] (https://github.com/openai/lm-human-preferences)
-- [Lit-LLaMA] (https://github.com/Lightning-AI/lit-llama)
-- [LoRA] (https://github.com/microsoft/LoRA)
-- [QLoRA-LLM] (https://github.com/michaelnny/QLoRA-LLM)
